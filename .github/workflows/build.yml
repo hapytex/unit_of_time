@@ -23,7 +23,7 @@ jobs:
         python-version: '3.x'
     - name: Run test
       run: |
-        pip install coveralls pytest-cov
+        pip install pytest-cov
         pytest --junitxml=pytest.xml --cov-report=term-missing:skip-covered --cov=unit_of_time timetest.py | tee pytest-coverage.txt
     - name: Coveralls
       uses: coverallsapp/github-action@v2
