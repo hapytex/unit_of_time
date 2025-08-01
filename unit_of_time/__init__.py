@@ -139,6 +139,24 @@ class TimeunitKindMeta(type):
     def truncate(cls, dt):
         return datetime.strptime(cls.to_str(dt), cls.formatter).date()
 
+    def _inner_shift(cls, cur, dt, amount):
+        return None
+
+    def _shift(cls, cur, dt, amount):
+        new_dt = cls._inner_shift(cur, dt, amount)
+        if new_dt is not None:
+            return cls(new_dt)
+        if amount > 0:
+            for i in range(amount):
+                cur = cur.next
+            return cur
+        elif amount < 0:
+            for i in range(-amount):
+                cur = cur.previous
+            return cur
+        else:
+            return cur
+
 
 class TimeunitKind(metaclass=TimeunitKindMeta):
     kind_int = None
@@ -153,6 +171,10 @@ class Year(TimeunitKind):
     def _next(cls, dt):
         return date(dt.year + 1, 1, 1)
 
+    @classmethod
+    def _inner_shift(cls, cur, dt, amount):
+        return date(dt.year + amount, 1, 1)
+
 
 class Quarter(TimeunitKind):
     kind_int = 3
@@ -166,6 +188,13 @@ class Quarter(TimeunitKind):
         return date(dt.year, 3 * ((dt.month - 1) // 3) + 1, 1)
 
     @classmethod
+    def _inner_shift(cls, cur, dt, amount):
+        q_new = dt.year * 4 + amount + (dt.month - 1) // 3
+        y = q_new // 4
+        q = q_new % 4
+        return date(q_new // 4, 3 * q + 1, 1)
+
+    @classmethod
     def _next(cls, dt):
         q2 = 3 * (dt.month + 2) // 3 + 1
         if q2 == 13:
@@ -176,6 +205,11 @@ class Quarter(TimeunitKind):
 class Month(TimeunitKind):
     kind_int = 5
     formatter = "%YM%m"
+
+    @classmethod
+    def _inner_shift(cls, cur, dt, amount):
+        m_new = dt.year * 12 + amount + dt.month - 1
+        return date(m_new // 12, m_new % 12 + 1, 1)
 
     @classmethod
     def _next(cls, dt):
@@ -191,6 +225,10 @@ class Week(TimeunitKind):
     formatter = "%YW%W"
 
     @classmethod
+    def _inner_shift(cls, cur, dt, amount):
+        return dt + timedelta(days=7 * amount)
+
+    @classmethod
     def truncate(cls, dt):
         if isinstance(dt, datetime):
             dt = dt.date()
@@ -204,6 +242,10 @@ class Week(TimeunitKind):
 class Day(TimeunitKind):
     kind_int = 9
     formatter = "%Y-%m-%d"
+
+    @classmethod
+    def _inner_shift(cls, cur, dt, amount):
+        return dt + timedelta(days=amount)
 
     @classmethod
     def _next(self, dt):
@@ -270,6 +312,18 @@ class Timeunit:
         while dt < end:
             yield dt
             dt += ONE_DAY
+
+    def __rshift__(self, other):
+        return self << -other
+
+    def __rlshift__(self, other):
+        return self >> other
+
+    def __rrshift__(self, other):
+        return self << other
+
+    def __lshift__(self, other):
+        return self.kind._shift(self, self.dt, other)
 
     @property
     def next(self):

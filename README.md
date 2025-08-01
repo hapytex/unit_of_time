@@ -37,6 +37,9 @@ The package provides some utility functions to make working with the time units 
 For example when we construct a year with
 
 ```python3
+from datetime import date
+from unit_of_time import Year
+
 year1958 = Year(date(1958, 3, 25))
 ```
 
@@ -59,6 +62,9 @@ for year in year1958.successors:
 We can also determine if a date, or another time range is fully enclosed by another one, for example:
 
 ```python3
+from datetime import date
+from unit_of_time import Month, Year
+
 Month(date(1958, 3, 25)) in Year(date(1958, 3, 25))  # True
 Month(date(2019, 11, 25)) in Year(date(1958, 3, 25))  # False
 ```
@@ -66,6 +72,9 @@ Month(date(2019, 11, 25)) in Year(date(1958, 3, 25))  # False
 or check if there is overlap between two time units, especially since weeks are not always fully enclosed by the month, quarter, etc. when the week starts or ends. For example:
 
 ```python3
+from datetime import date
+from unit_of_time import Week, Year
+
 Week(date(1957, 12, 31)).overlaps_with(Year(date(1958, 1, 1)))  # True
 ```
 
@@ -76,6 +85,9 @@ since the week with 1957-12-31 starts on December 30th.
 We can also check if one time unit starts before another time unit if these are of the same kind, like:
 
 ```python3
+from datetime import date
+from unit_of_time import Week, Week
+
 Week(date(1957, 12, 31)) <= Week(date(1958, 3, 25))
 ```
 
@@ -84,11 +96,35 @@ Week(date(1957, 12, 31)) <= Week(date(1958, 3, 25))
 A time unit itself is iterable: it will yield all dates contained by the time unit. For example we can get all dates of `1958Q1` with:
 
 ```python3
+from datetime import date
+from unit_of_time import Quarter
+
 for dt in Quarter(date(1958, 3, 25)):
   print(dt)  # 1958-01-01 to 1958-03-31
 ```
 
 we can also convert such collection to a list.
+
+### Shifting units of time
+
+The units of time can also be shifted, for example:
+
+```python3
+from datetime import date
+from unit_of_time import Day, Month, Quarter, Week, Year
+
+Year(date(1958, 3, 25)) << 1  # Year(date(1959, 1, 1))
+Quarter(date(1958, 3, 25)) >> 2  # Quarter(date(1957, 7, 1))
+3 >> Month(date(1958, 3, 25))  # Month(date(1958, 6, 1))
+4 << Week(date(1958, 3, 25))  # Week(date(1958, 2, 24))
+
+Year(date(1958, 3, 25)) << -1  # Year(date(1957, 1, 1))
+Quarter(date(1958, 3, 25)) >> -2  # Quarter(date(1958, 7, 1))
+-3 >> Month(date(1958, 3, 25))  # Month(date(1958, 12, 1))
+-4 << Week(date(1958, 3, 25))  # Week(date(1958, 4, 21))
+```
+
+so we can add or subtract a given number of years, quarters, months, weeks, and days from a given unit of time.
 
 ### Hash and index
 
@@ -97,6 +133,9 @@ A time unit is hashable, it uses the `int` representation as hash. It is also in
 We can thus make a (very) long list, and work with:
 
 ```python3
+from datetime import date
+from unit_of_time import Day
+
 specials_unit_of_times = [False] * 202512319
 specials_unit_of_times[Day(date(1958, 3, 25))] = True
 ```
@@ -105,9 +144,12 @@ we can even use this to slice, although it probably is not very useful.
 
 ## Registering a new time unit
 
-We can register a new time unit, for example a decade with:
+We can register a new time unit. For example, a decade with:
 
 ```python3
+from datetime import date
+from unit_of_time import TimeunitKind
+
 class Decade(TimeunitKind):
     kind_int = 0
     formatter = "%Ys"
@@ -123,9 +165,11 @@ class Decade(TimeunitKind):
 
 Subclassing `TimeunitKind` will automatically register it. One has to fill in the `kind_int`, which is an integer, preferrably between `0` and `9`, although one can register outside the range. If that is the case, the "kind" will take two or more digits when converting to an int.
 
-One can also implment a formatter. This is strictly speaking not necessary, since one can also implement a `.to_str()` method:
+One can also implement a formatter. This is strictly speaking not necessary, since one can also implement a `.to_str()` method:
 
 ```python3
+from unit_of_time import TimeunitKind
+
 class Decade(TimeunitKind):
     kind_int = 0
     
