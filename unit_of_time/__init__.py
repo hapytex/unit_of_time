@@ -308,8 +308,8 @@ class Timeunit:
             yield dt
             dt += ONE_DAY
 
-    def __lshift__(self, other):
-        return self >> -other
+    def __rshift__(self, other):
+        return self << -other
 
     def __rlshift__(self, other):
         return self >> -other
@@ -317,7 +317,7 @@ class Timeunit:
     def __rrshift__(self, other):
         return self >> -other
 
-    def __rshift__(self, other):
+    def __lshift__(self, other):
         return type(self)._shift(self, self.dt, other)
 
     @property
