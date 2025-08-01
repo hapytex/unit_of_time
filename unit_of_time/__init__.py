@@ -271,6 +271,28 @@ class Timeunit:
             yield dt
             dt += ONE_DAY
 
+    def __lshift__(self, other):
+        return self >> -other
+
+    def __rlshift__(self, other):
+        return self >> -other
+
+    def __rrshift__(self, other):
+        return self >> -other
+
+    def __rshift__(self, other):
+        cur = self
+        if other > 0:
+            for i in range(other):
+                cur = cur.next
+            return cur
+        elif other < 0:
+            for i in range(-other):
+                cur = cur.previous
+            return cur
+        else:
+            return self
+
     @property
     def next(self):
         return self.kind.get_next(self.dt)
