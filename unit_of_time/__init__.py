@@ -171,6 +171,7 @@ class Year(TimeunitKind):
     def _next(cls, dt):
         return date(dt.year + 1, 1, 1)
 
+    @classmethod
     def _inner_shift(cls, cur, dt, amount):
         return date(dt.year + amount, 1, 1)
 
@@ -186,6 +187,7 @@ class Quarter(TimeunitKind):
     def truncate(cls, dt):
         return date(dt.year, 3 * ((dt.month - 1) // 3) + 1, 1)
 
+    @classmethod
     def _inner_shift(cls, cur, dt, amount):
         q_new = dt.year * 4 + amount + (dt.month - 1) // 3
         y = q_new // 4
@@ -204,6 +206,7 @@ class Month(TimeunitKind):
     kind_int = 5
     formatter = "%YM%m"
 
+    @classmethod
     def _inner_shift(cls, cur, dt, amount):
         m_new = dt.year * 12 + amount + dt.month - 1
         return date(m_new // 12, m_new % 12 + 1, 1)
@@ -221,6 +224,7 @@ class Week(TimeunitKind):
     kind_int = 7
     formatter = "%YW%W"
 
+    @classmethod
     def _inner_shift(cls, cur, dt, amount):
         return dt + timedelta(days=7 * amount)
 
@@ -239,6 +243,7 @@ class Day(TimeunitKind):
     kind_int = 9
     formatter = "%Y-%m-%d"
 
+    @classmethod
     def _inner_shift(cls, cur, dt, amount):
         return dt + timedelta(days=amount)
 
