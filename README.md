@@ -1,6 +1,7 @@
 # `unit_of_time`
 
-[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/unit_of_time)](https://pypi.org/project/unit_of_time/)
+[![PyPI - Version](https://img.shields.io/pypi/v/unit_of_time)](https://pypi.org/project/unit_of_time/)
+[![Coverage](https://img.shields.io/coverallsCoverage/github/hapytex/unit_of_time)](https://coveralls.io/github/hapytex/unit_of_time)
 
 
 `unit_of_time` is a small package to represents time ranges through an `int`, this means we can easily store these, for
