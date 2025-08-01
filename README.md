@@ -89,6 +89,24 @@ for dt in Quarter(date(1958, 3, 25)):
 
 we can also convert such collection to a list.
 
+### Shifting units of time
+
+The units of time can also be shifted, for example:
+
+```python3
+Year(date(1958, 3, 25)) << 1  # Year(date(1959, 1, 1))
+Quarter(date(1958, 3, 25)) >> 2  # Quarter(date(1957, 7, 1))
+3 >> Month(date(1958, 3, 25))  # Month(date(1958, 6, 1))
+4 << Week(date(1958, 3, 25))  # Week(date(1958, 2, 24))
+
+Year(date(1958, 3, 25)) << -1  # Year(date(1957, 1, 1))
+Quarter(date(1958, 3, 25)) >> -2  # Quarter(date(1958, 7, 1))
+-3 >> Month(date(1958, 3, 25))  # Month(date(1958, 12, 1))
+-4 << Week(date(1958, 3, 25))  # Week(date(1958, 4, 21))
+```
+
+so we can add or subtract a given number of years, quarters, months, weeks, and days from a given unit of time.
+
 ### Hash and index
 
 A time unit is hashable, it uses the `int` representation as hash. It is also indexable, and uses the `int` representation.
