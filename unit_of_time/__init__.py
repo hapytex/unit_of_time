@@ -312,13 +312,13 @@ class Timeunit:
         return self << -other
 
     def __rlshift__(self, other):
-        return self >> -other
+        return self >> other
 
     def __rrshift__(self, other):
-        return self >> -other
+        return self << other
 
     def __lshift__(self, other):
-        return type(self)._shift(self, self.dt, other)
+        return self.kind._shift(self, self.dt, other)
 
     @property
     def next(self):
