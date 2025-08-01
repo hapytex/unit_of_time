@@ -192,7 +192,7 @@ class Quarter(TimeunitKind):
         q_new = dt.year * 4 + amount + (dt.month - 1) // 3
         y = q_new // 4
         q = q_new % 4
-        return date(q_new // 4, 3 * q + 1)
+        return date(q_new // 4, 3 * q + 1, 1)
 
     @classmethod
     def _next(cls, dt):
