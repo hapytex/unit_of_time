@@ -281,10 +281,10 @@ class Timeunit:
         return self >> -other
 
     def __rshift__(self, other):
-        return self._shift(self.dt, other)
+        return type(self)._shift(self, self.dt, other)
 
-    def _shift(self, dt, amount):
-        cur = self
+    @classmethod
+    def _shift(cls, cur, dt, amount):
         if amount > 0:
             for i in range(amount):
                 cur = cur.next
@@ -294,7 +294,7 @@ class Timeunit:
                 cur = cur.previous
             return cur
         else:
-            return self
+            return cur
 
     @property
     def next(self):
