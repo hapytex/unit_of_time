@@ -139,6 +139,18 @@ class TimeunitKindMeta(type):
     def truncate(cls, dt):
         return datetime.strptime(cls.to_str(dt), cls.formatter).date()
 
+    def _shift(cls, cur, dt, amount):
+        if amount > 0:
+            for i in range(amount):
+                cur = cur.next
+            return cur
+        elif amount < 0:
+            for i in range(-amount):
+                cur = cur.previous
+            return cur
+        else:
+            return cur
+
 
 class TimeunitKind(metaclass=TimeunitKindMeta):
     kind_int = None
@@ -282,19 +294,6 @@ class Timeunit:
 
     def __rshift__(self, other):
         return type(self)._shift(self, self.dt, other)
-
-    @classmethod
-    def _shift(cls, cur, dt, amount):
-        if amount > 0:
-            for i in range(amount):
-                cur = cur.next
-            return cur
-        elif amount < 0:
-            for i in range(-amount):
-                cur = cur.previous
-            return cur
-        else:
-            return cur
 
     @property
     def next(self):
