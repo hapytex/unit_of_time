@@ -1,6 +1,8 @@
 import math
 from datetime import date, datetime, timedelta
 
+ONE_DAY = timedelta(days=1)
+
 
 def date_from_int(val, div=1):
     val //= div
@@ -62,7 +64,8 @@ class TimeunitKindMeta(type):
 
     def __eq__(cls, other):
         """
-        Return True if this time unit kind is the same as another kind or matches the kind registered for the given integer.
+        Return True if this time unit kind is the same as another kind or matches the
+        kind registered for the given integer.
 
         Parameters:
             other: Another kind instance or an integer representing a registered kind.
@@ -125,7 +128,8 @@ class TimeunitKindMeta(type):
         """
         Return the next time unit instance of this kind after the given date.
 
-        If a `Timeunit` is provided, its date is used. The returned instance represents the time unit immediately following the one containing `dt`.
+        If a `Timeunit` is provided, its date is used. The returned instance
+        represents the time unit immediately following the one containing `dt`.
         """
         if isinstance(dt, Timeunit):
             dt = dt.dt
@@ -274,7 +278,8 @@ class Timeunit:
     @property
     def ancestors(self):
         """
-        Yields an infinite sequence of preceding time units, starting from the previous unit of this instance.
+        Yields an infinite sequence of preceding time units, starting from the
+        previous unit of this instance.
 
         Each iteration yields the next earlier time unit of the same kind.
         """
@@ -304,7 +309,6 @@ class Timeunit:
     def __iter__(self):
         dt = self.dt
         end = self.next.dt
-        ONE_DAY = timedelta(days=1)
         while dt < end:
             yield dt
             dt += ONE_DAY
@@ -335,7 +339,8 @@ class Timeunit:
         """
         Return True if this Timeunit is equal to another Timeunit or an integer representation.
 
-        Equality is determined by matching both the kind and the truncated date. If `other` is an integer, it is first converted to a Timeunit instance.
+        Equality is determined by matching both the kind and the truncated date.
+        If `other` is an integer, it is first converted to a Timeunit instance.
         """
         if isinstance(other, int):
             other = TimeunitKind.from_int(other)
@@ -405,7 +410,8 @@ class Timeunit:
             item: A date, Timeunit, or a tuple of two dates representing a date range.
 
         Returns:
-            bool: True if there is any overlap between this time unit and the specified range or unit; otherwise, False.
+            bool: True if there is any overlap between this time unit and the specified range
+            or unit; otherwise, False.
         """
         frm0, to0 = self._get_range(item)
         frm, to = self.date_range
