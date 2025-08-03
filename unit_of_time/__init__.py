@@ -48,19 +48,19 @@ class TimeunitKindMeta(type):
             TimeunitKindMeta._multiplier = result
         return result
 
-    def __int__(self):
-        return self.kind_int
+    def __int__(cls):
+        return cls.kind_int
 
-    def __index__(self):
-        return int(self)
+    def __index__(cls):
+        return int(cls)
 
-    def __hash__(self):
+    def __hash__(cls):
         """
         Return the hash value of the time unit, based on its integer encoding.
         """
-        return hash(int(self))
+        return hash(int(cls))
 
-    def __eq__(self, other):
+    def __eq__(cls, other):
         """
         Return True if this time unit kind is the same as another kind or matches the kind registered for the given integer.
 
@@ -72,7 +72,7 @@ class TimeunitKindMeta(type):
         """
         if isinstance(other, int):
             other = TimeunitKind.unit_register[other]
-        return self is other
+        return cls is other
 
     def __call__(cls, dt):
         """
@@ -84,8 +84,8 @@ class TimeunitKindMeta(type):
             dt = dt.dt
         return Timeunit(cls, dt)
 
-    def __lt__(self, other):
-        return self.kind_int < other.kind_int
+    def __lt__(cls, other):
+        return cls.kind_int < other.kind_int
 
     def from_int(cls, val):
         mul = cls.multiplier
