@@ -34,9 +34,7 @@ class TimeunitKindMeta(type):
         result = TimeunitKindMeta._registered
         if result is None:
             result = {
-                k.kind_int: k
-                for k in TimeunitKindMeta._pre_registered
-                if k.kind_int is not None
+                k.kind_int: k for k in TimeunitKindMeta._pre_registered if k.kind_int is not None
             }
             TimeunitKindMeta._registered = result
         return result
@@ -190,9 +188,7 @@ class Quarter(TimeunitKind):
     @classmethod
     def _inner_shift(cls, cur, dt, amount):
         q_new = dt.year * 4 + amount + (dt.month - 1) // 3
-        y = q_new // 4
-        q = q_new % 4
-        return date(q_new // 4, 3 * q + 1, 1)
+        return date(q_new // 4, 3 * (q_new % 4) + 1, 1)
 
     @classmethod
     def _next(cls, dt):
@@ -397,6 +393,7 @@ class Timeunit:
             dt0, dt1 = item
             if isinstance(dt0, date) and isinstance(dt1, date):
                 return item
+            raise TypeError(f"Cannot interpret date range of type {type(item)}")
         except TypeError:
             raise TypeError(f"Item {item!r} has no date range.") from None
 
