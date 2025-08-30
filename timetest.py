@@ -151,12 +151,8 @@ class TimeUnitTest(unittest.TestCase):
                     self.assertEqual(tu.previous.previous.previous, 3 << tu)
                     self.assertLess(tu.last_date, tu.next.first_date)
                     self.assertLess(tu.previous.last_date, tu.first_date)
-                    self.assertEqual(
-                        (tu.next.first_date - tu.last_date), timedelta(days=1)
-                    )
-                    self.assertEqual(
-                        (tu.first_date - tu.previous.last_date), timedelta(days=1)
-                    )
+                    self.assertEqual((tu.next.first_date - tu.last_date), timedelta(days=1))
+                    self.assertEqual((tu.first_date - tu.previous.last_date), timedelta(days=1))
 
     def test_hierarchy(self):
         """
