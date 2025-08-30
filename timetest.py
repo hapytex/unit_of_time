@@ -111,6 +111,8 @@ class TimeUnitTest(unittest.TestCase):
                     self.assertIn((dt, dt), tu)
                     self.assertIn((tu.first_date, tu.last_date), tu)
                     with self.assertRaises(TypeError):
+                        self.assertIn((1958, 2019), tu)
+                    with self.assertRaises(TypeError):
                         self.assertIn(1425, tu)
                     self.assertIn(dt, list(tu))
                     self.assertEqual(len(tu), len(list(tu)))
