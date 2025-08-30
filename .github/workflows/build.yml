@@ -24,7 +24,7 @@ jobs:
         cache: 'pip'
     - name: Run pyright
       run: |
-        pip install "pyright>=1.1,<2"
+        pip install "pyright>=1.1,<2" "setuptools>=38.6.0,<69.0"
         pyright
   isort:
     name: isort
