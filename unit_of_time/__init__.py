@@ -2,6 +2,7 @@ import math
 from datetime import date, datetime, timedelta
 from typing import Dict, Union
 
+
 def date_from_int(val: int, div=1) -> date:
     val //= div
     d = val % 100
@@ -11,15 +12,15 @@ def date_from_int(val: int, div=1) -> date:
     return date(val, m, d)
 
 
-def date_to_int(val: date, mul: int=1) -> int:
+def date_to_int(val: date, mul: int = 1) -> int:
     return mul * (val.year * 10000 + val.month * 100 + val.day)
 
 
 class TimeunitKindMeta(type):
     kind_int: int = -1
-    formatter: str = ''
-    _pre_registered: list['TimeunitKindMeta'] = []
-    _registered: Union[None, Dict[int, 'TimeunitKindMeta']] = None
+    formatter: str = ""
+    _pre_registered: list["TimeunitKindMeta"] = []
+    _registered: Union[None, Dict[int, "TimeunitKindMeta"]] = None
     _multiplier: int = -1
 
     def __init__(cls, name, bases, attrs) -> None:
@@ -30,7 +31,7 @@ class TimeunitKindMeta(type):
             TimeunitKindMeta._multiplier = -1
 
     @property
-    def unit_register(self) -> Dict[int, 'TimeunitKindMeta']:
+    def unit_register(self) -> Dict[int, "TimeunitKindMeta"]:
         result = TimeunitKindMeta._registered
         if result is None:
             result = {
@@ -79,7 +80,7 @@ class TimeunitKindMeta(type):
             other = TimeunitKind.unit_register.get(other)
         return self is other
 
-    def __call__(cls, dt: Union['Timeunit', date]) -> 'Timeunit':
+    def __call__(cls, dt: Union["Timeunit", date]) -> "Timeunit":
         """
         Creates a `Timeunit` instance of this kind from a given date or `Timeunit`.
 
@@ -126,7 +127,7 @@ class TimeunitKindMeta(type):
         """
         return cls.last_day(dt) + timedelta(days=1)
 
-    def get_next(cls, dt: Union['Timeunit', date]) -> 'Timeunit':
+    def get_next(cls, dt: Union["Timeunit", date]) -> "Timeunit":
         """
         Return the next time unit instance of this kind after the given date.
 
@@ -145,7 +146,7 @@ class TimeunitKindMeta(type):
     def _inner_shift(cls, cur, dt, amount) -> Union[date, None]:
         return None
 
-    def _shift(cls, cur: 'Timeunit', dt: date, amount: int) -> 'Timeunit':
+    def _shift(cls, cur: "Timeunit", dt: date, amount: int) -> "Timeunit":
         new_dt = cls._inner_shift(cur, dt, amount)
         if new_dt is not None:
             return cls(new_dt)
@@ -163,7 +164,7 @@ class TimeunitKindMeta(type):
 
 class TimeunitKind(metaclass=TimeunitKindMeta):
     kind_int = -1
-    formatter = ''
+    formatter = ""
 
 
 class Year(TimeunitKind):
@@ -247,7 +248,7 @@ class Day(TimeunitKind):
     formatter = "%Y-%m-%d"
 
     @classmethod
-    def _inner_shift(cls, cur: 'Timeunit', dt: date, amount: int) -> date:
+    def _inner_shift(cls, cur: "Timeunit", dt: date, amount: int) -> date:
         return dt + timedelta(days=amount)
 
     @classmethod
@@ -400,7 +401,7 @@ class Timeunit:
             dt0, dt1 = item
             if isinstance(dt0, date) and isinstance(dt1, date):
                 return dt0, dt1
-            raise TypeError(f'Item {item!r} is not a date range.') from None
+            raise TypeError(f"Item {item!r} is not a date range.") from None
         except TypeError:
             raise TypeError(f"Item {item!r} has no date range.") from None
 
