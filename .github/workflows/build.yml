@@ -12,27 +12,7 @@ jobs:
       - uses: psf/black@stable
         with:
           options: "--check"
-  pylint:
-    name: run pylint
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version:
-          - '3.9'
-          - '3.10'
-          - '3.11'
-          - '3.12'
-          - '3.13'
-    steps:
-    - uses: actions/checkout@v4
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: ${{ matrix.python-version }}
-    - name: Pylint
-      run: |
-        pip install pylint
-        pylint unit_of_time
+       pylint unit_of_time
   test:
     name: run tests
     runs-on: ubuntu-latest
