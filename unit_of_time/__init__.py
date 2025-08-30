@@ -48,7 +48,7 @@ class TimeunitKindMeta(type):
         if result == -1:
             result = 1
             for k in TimeunitKindMeta._pre_registered:
-                if k.kind_int >= result:
+                while k.kind_int >= result:
                     result *= 10
             TimeunitKindMeta._multiplier = result
         return result
