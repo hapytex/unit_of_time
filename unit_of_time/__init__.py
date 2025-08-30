@@ -32,7 +32,7 @@ class TimeunitKindMeta(type):
             TimeunitKindMeta._multiplier = None
 
     @property
-    def unit_register(self):
+    def unit_register(cls):
         result = TimeunitKindMeta._registered
         if result is None:
             result = {
@@ -149,11 +149,11 @@ class TimeunitKindMeta(type):
         if new_dt is not None:
             return cls(new_dt)
         if amount > 0:
-            for i in range(amount):
+            for _ in range(amount):
                 cur = cur.next
             return cur
         elif amount < 0:
-            for i in range(-amount):
+            for _ in range(-amount):
                 cur = cur.previous
             return cur
         else:
@@ -391,7 +391,7 @@ class Timeunit:
         """
         if isinstance(item, date):
             return item, item
-        elif isinstance(item, Timeunit):
+        if isinstance(item, Timeunit):
             return item.date_range
         # try to make a range
         try:
