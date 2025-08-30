@@ -93,11 +93,11 @@ class TimeunitKindMeta(type):
     def __lt__(self, other):
         return self.kind_int < other.kind_int
 
-    def from_int(cls, val: int) -> 'Timeunit':
+    def from_int(cls, val: int) -> "Timeunit":
         mul = cls.multiplier
         return TimeunitKind.unit_register[val % mul](date_from_int(val, mul))
 
-    def get_previous(cls, dt: Union[date, 'Timeunit']) -> 'Timeunit':
+    def get_previous(cls, dt: Union[date, "Timeunit"]) -> "Timeunit":
         if isinstance(dt, Timeunit):
             dt = dt.dt
         dt -= timedelta(days=1)
@@ -176,7 +176,7 @@ class Year(TimeunitKind):
         return date(dt.year + 1, 1, 1)
 
     @classmethod
-    def _inner_shift(cls, cur: 'Timeunit', dt: date, amount: int):
+    def _inner_shift(cls, cur: "Timeunit", dt: date, amount: int):
         return date(dt.year + amount, 1, 1)
 
 
@@ -192,7 +192,7 @@ class Quarter(TimeunitKind):
         return date(dt.year, 3 * ((dt.month - 1) // 3) + 1, 1)
 
     @classmethod
-    def _inner_shift(cls, cur: 'Timeunit', dt: date, amount: int) -> date:
+    def _inner_shift(cls, cur: "Timeunit", dt: date, amount: int) -> date:
         q_new = dt.year * 4 + amount + (dt.month - 1) // 3
         y = q_new // 4
         q = q_new % 4
@@ -211,7 +211,7 @@ class Month(TimeunitKind):
     formatter = "%YM%m"
 
     @classmethod
-    def _inner_shift(cls, cur: 'Timeunit', dt: date, amount: int) -> date:
+    def _inner_shift(cls, cur: "Timeunit", dt: date, amount: int) -> date:
         m_new = dt.year * 12 + amount + dt.month - 1
         return date(m_new // 12, m_new % 12 + 1, 1)
 
@@ -229,7 +229,7 @@ class Week(TimeunitKind):
     formatter = "%YW%W"
 
     @classmethod
-    def _inner_shift(cls, cur: 'Timeunit', dt: date, amount: int) -> date:
+    def _inner_shift(cls, cur: "Timeunit", dt: date, amount: int) -> date:
         return dt + timedelta(days=7 * amount)
 
     @classmethod
