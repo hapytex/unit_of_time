@@ -111,6 +111,8 @@ class TimeUnitTest(unittest.TestCase):
                     self.assertIn((dt, dt), tu)
                     self.assertIn((tu.first_date, tu.last_date), tu)
                     with self.assertRaises(TypeError):
+                        self.assertIn((1958, 2019), tu)
+                    with self.assertRaises(TypeError):
                         self.assertIn(1425, tu)
                     self.assertIn(dt, list(tu))
                     self.assertEqual(len(tu), len(list(tu)))
@@ -151,8 +153,12 @@ class TimeUnitTest(unittest.TestCase):
                     self.assertEqual(tu.previous.previous.previous, 3 << tu)
                     self.assertLess(tu.last_date, tu.next.first_date)
                     self.assertLess(tu.previous.last_date, tu.first_date)
-                    self.assertEqual((tu.next.first_date - tu.last_date), timedelta(days=1))
-                    self.assertEqual((tu.first_date - tu.previous.last_date), timedelta(days=1))
+                    self.assertEqual(
+                        (tu.next.first_date - tu.last_date), timedelta(days=1)
+                    )
+                    self.assertEqual(
+                        (tu.first_date - tu.previous.last_date), timedelta(days=1)
+                    )
 
     def test_hierarchy(self):
         """
