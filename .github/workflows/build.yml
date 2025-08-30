@@ -8,7 +8,7 @@ jobs:
   black:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - uses: psf/black@stable
         with:
           options: "--check"
@@ -26,6 +26,20 @@ jobs:
       run: |
         pip install "pyright>=1.1,<2"
         pyright
+  isort:
+    name: isort
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.x'
+        cache: 'pip'
+    - name: Run isort
+      run: |
+        pip install "isort>=6.0,<6.1"
+        isort -c .
   test:
     name: run tests
     runs-on: ubuntu-latest
