@@ -1,8 +1,8 @@
 import math
 from datetime import date, datetime, timedelta
+from typing import Dict, Union
 
-
-def date_from_int(val, div=1):
+def date_from_int(val: int, div=1) -> date:
     val //= div
     d = val % 100
     val //= 100
@@ -11,26 +11,26 @@ def date_from_int(val, div=1):
     return date(val, m, d)
 
 
-def date_to_int(val, mul=1):
+def date_to_int(val: date, mul: int=1) -> int:
     return mul * (val.year * 10000 + val.month * 100 + val.day)
 
 
 class TimeunitKindMeta(type):
-    kind_int = None
-    formatter = None
-    _pre_registered = []
-    _registered = None
-    _multiplier = None
+    kind_int: int = -1
+    formatter: str = ''
+    _pre_registered: list['TimeunitKindMeta'] = []
+    _registered: Union[None, Dict[int, 'TimeunitKindMeta']] = None
+    _multiplier: int = -1
 
-    def __init__(cls, name, bases, attrs):
+    def __init__(cls, name, bases, attrs) -> None:
         super().__init__(name, bases, attrs)
         if cls.kind_int is not None:
             TimeunitKindMeta._pre_registered.append(cls)
             TimeunitKindMeta._registered = None
-            TimeunitKindMeta._multiplier = None
+            TimeunitKindMeta._multiplier = -1
 
     @property
-    def unit_register(self):
+    def unit_register(self) -> Dict[int, 'TimeunitKindMeta']:
         result = TimeunitKindMeta._registered
         if result is None:
             result = {
@@ -42,27 +42,29 @@ class TimeunitKindMeta(type):
         return result
 
     @property
-    def multiplier(cls):
+    def multiplier(cls) -> int:
         result = TimeunitKindMeta._multiplier
-        if result is None:
-            result = max(1, *[k.kind_int for k in TimeunitKindMeta._pre_registered])
-            result = 10 ** math.ceil(math.log10(result))
+        if result == -1:
+            result = 1
+            for k in TimeunitKindMeta._pre_registered:
+                if k.kind_int >= result:
+                    result *= 10
             TimeunitKindMeta._multiplier = result
         return result
 
-    def __int__(self):
+    def __int__(self) -> int:
         return self.kind_int
 
-    def __index__(self):
+    def __index__(self) -> int:
         return int(self)
 
-    def __hash__(self):
+    def __hash__(self) -> int:
         """
         Return the hash value of the time unit, based on its integer encoding.
         """
         return hash(int(self))
 
-    def __eq__(self, other):
+    def __eq__(self, other: object) -> bool:
         """
         Return True if this time unit kind is the same as another kind or matches the kind registered for the given integer.
 
@@ -73,10 +75,11 @@ class TimeunitKindMeta(type):
             bool: True if both refer to the same time unit kind, otherwise False.
         """
         if isinstance(other, int):
-            other = TimeunitKind.unit_register[other]
+            # if out of range, None will fail
+            other = TimeunitKind.unit_register.get(other)
         return self is other
 
-    def __call__(cls, dt):
+    def __call__(cls, dt: Union['Timeunit', date]) -> 'Timeunit':
         """
         Creates a `Timeunit` instance of this kind from a given date or `Timeunit`.
 
@@ -99,7 +102,7 @@ class TimeunitKindMeta(type):
         dt -= timedelta(days=1)
         return cls(dt)
 
-    def last_day(cls, dt):
+    def last_day(cls, dt: date) -> date:
         """
         Return the last date of the time unit containing the given date.
 
@@ -111,7 +114,7 @@ class TimeunitKindMeta(type):
         """
         return cls._next(dt) - timedelta(days=1)
 
-    def _next(cls, dt):
+    def _next(cls, dt: date) -> date:
         """
         Return the first day of the next time unit following the given date.
 
@@ -123,7 +126,7 @@ class TimeunitKindMeta(type):
         """
         return cls.last_day(dt) + timedelta(days=1)
 
-    def get_next(cls, dt):
+    def get_next(cls, dt: Union['Timeunit', date]) -> 'Timeunit':
         """
         Return the next time unit instance of this kind after the given date.
 
@@ -133,16 +136,16 @@ class TimeunitKindMeta(type):
             dt = dt.dt
         return cls(cls._next(cls.truncate(dt)))
 
-    def to_str(cls, dt):
+    def to_str(cls, dt) -> str:
         return dt.strftime(cls.formatter)
 
-    def truncate(cls, dt):
+    def truncate(cls, dt: date) -> date:
         return datetime.strptime(cls.to_str(dt), cls.formatter).date()
 
-    def _inner_shift(cls, cur, dt, amount):
+    def _inner_shift(cls, cur, dt, amount) -> Union[date, None]:
         return None
 
-    def _shift(cls, cur, dt, amount):
+    def _shift(cls, cur: 'Timeunit', dt: date, amount: int) -> 'Timeunit':
         new_dt = cls._inner_shift(cur, dt, amount)
         if new_dt is not None:
             return cls(new_dt)
@@ -159,8 +162,8 @@ class TimeunitKindMeta(type):
 
 
 class TimeunitKind(metaclass=TimeunitKindMeta):
-    kind_int = None
-    formatter = None
+    kind_int = -1
+    formatter = ''
 
 
 class Year(TimeunitKind):
@@ -184,7 +187,7 @@ class Quarter(TimeunitKind):
         return f"{dt.year}Q{dt.month//3}"
 
     @classmethod
-    def truncate(cls, dt):
+    def truncate(cls, dt: date) -> date:
         return date(dt.year, 3 * ((dt.month - 1) // 3) + 1, 1)
 
     @classmethod
@@ -229,7 +232,7 @@ class Week(TimeunitKind):
         return dt + timedelta(days=7 * amount)
 
     @classmethod
-    def truncate(cls, dt):
+    def truncate(cls, dt: date) -> date:
         if isinstance(dt, datetime):
             dt = dt.date()
         return dt - timedelta(days=dt.weekday())
@@ -244,11 +247,11 @@ class Day(TimeunitKind):
     formatter = "%Y-%m-%d"
 
     @classmethod
-    def _inner_shift(cls, cur, dt, amount):
+    def _inner_shift(cls, cur: 'Timeunit', dt: date, amount: int) -> date:
         return dt + timedelta(days=amount)
 
     @classmethod
-    def _next(self, dt):
+    def _next(cls, dt: date) -> date:
         return dt + timedelta(days=1)
 
 
@@ -370,7 +373,7 @@ class Timeunit:
         return f"{self.__class__.__name__}({self.kind.__qualname__}, {self.dt!r})"
 
     @classmethod
-    def _get_range(cls, item):
+    def _get_range(cls, item) -> tuple[date, date]:
         """
         Extracts a date range tuple from the given item.
 
@@ -396,7 +399,8 @@ class Timeunit:
         try:
             dt0, dt1 = item
             if isinstance(dt0, date) and isinstance(dt1, date):
-                return item
+                return dt0, dt1
+            raise TypeError(f'Item {item!r} is not a date range.') from None
         except TypeError:
             raise TypeError(f"Item {item!r} has no date range.") from None
 
