@@ -1,7 +1,8 @@
 import unittest
 from datetime import date, datetime, time, timedelta
 
-from unit_of_time import Day, Month, Quarter, Timeunit, TimeunitKind, Week, Year
+from unit_of_time import (Day, Month, Quarter, Timeunit, TimeunitKind, Week,
+                          Year)
 
 
 class Decade(TimeunitKind):
