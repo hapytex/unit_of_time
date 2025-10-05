@@ -136,6 +136,9 @@ class TimeunitKindMeta(type):
     def to_str(cls, dt):
         return dt.strftime(cls.formatter)
 
+    def get_index_for_date(cls, dt):
+        return None
+
     def truncate(cls, dt):
         return datetime.strptime(cls.to_str(dt), cls.formatter).date()
 
@@ -172,6 +175,10 @@ class Year(TimeunitKind):
         return date(dt.year + 1, 1, 1)
 
     @classmethod
+    def get_index_for_date(cls, dt):
+        return dt.year - date.min.year
+
+    @classmethod
     def _inner_shift(cls, cur, dt, amount):
         return date(dt.year + amount, 1, 1)
 
@@ -181,7 +188,12 @@ class Quarter(TimeunitKind):
 
     @classmethod
     def to_str(cls, dt):
-        return f"{dt.year}Q{dt.month//3}"
+        return f"{dt.year}Q{(dt.month+2)//3}"
+
+    @classmethod
+    def get_index_for_date(cls, dt):
+        return 4 * (dt.year - date.min.year) + max((dt.month - 1) // 3, 0)
+
 
     @classmethod
     def truncate(cls, dt):
@@ -212,6 +224,10 @@ class Month(TimeunitKind):
         return date(m_new // 12, m_new % 12 + 1, 1)
 
     @classmethod
+    def get_index_for_date(cls, dt):
+        return 12 * (dt.year - date.min.year) + dt.month - 1
+
+    @classmethod
     def _next(cls, dt):
         m2 = dt.month + 1
         if m2 > 12:
@@ -229,6 +245,11 @@ class Week(TimeunitKind):
         return dt + timedelta(days=7 * amount)
 
     @classmethod
+    def get_index_for_date(cls, dt):
+        # date.min has weekday() == 0
+        return (dt - date.min).days // 7
+
+    @classmethod
     def truncate(cls, dt):
         if isinstance(dt, datetime):
             dt = dt.date()
@@ -242,6 +263,11 @@ class Week(TimeunitKind):
 class Day(TimeunitKind):
     kind_int = 9
     formatter = "%Y-%m-%d"
+
+    @classmethod
+    def get_index_for_date(cls, dt):
+        return (dt - date.min).days
+
 
     @classmethod
     def _inner_shift(cls, cur, dt, amount):
