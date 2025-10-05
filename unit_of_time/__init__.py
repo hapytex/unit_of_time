@@ -194,7 +194,6 @@ class Quarter(TimeunitKind):
     def get_index_for_date(cls, dt):
         return 4 * (dt.year - date.min.year) + max((dt.month - 1) // 3, 0)
 
-
     @classmethod
     def truncate(cls, dt):
         return date(dt.year, 3 * ((dt.month - 1) // 3) + 1, 1)
@@ -267,7 +266,6 @@ class Day(TimeunitKind):
     @classmethod
     def get_index_for_date(cls, dt):
         return (dt - date.min).days
-
 
     @classmethod
     def _inner_shift(cls, cur, dt, amount):
