@@ -171,6 +171,10 @@ class Year(TimeunitKind):
     formatter = "%Y"
 
     @classmethod
+    def truncate(cls, dt):
+        return date(dt.year, 1, 1)
+
+    @classmethod
     def _next(cls, dt):
         return date(dt.year + 1, 1, 1)
 
