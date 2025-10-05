@@ -20,6 +20,10 @@ class Decade(TimeunitKind):
                 date: The first day (January 1) of the decade in which `dt` falls.
         """
         return date(10 * (dt.year // 10), 1, 1)
+    
+    @classmethod
+    def get_index_for_date(cls, dt):
+        return dt.year // 10
 
     @classmethod
     def last_day(cls, dt):
