@@ -276,7 +276,7 @@ class Day(TimeunitKind):
         return dt + timedelta(days=amount)
 
     @classmethod
-    def _next(self, dt):
+    def _next(cls, dt):
         return dt + timedelta(days=1)
 
 
