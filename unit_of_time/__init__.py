@@ -1,9 +1,8 @@
-import math
 from datetime import date, datetime, timedelta
 from typing import Dict, Union
 
 
-def date_from_int(val: int, div=1) -> date:
+def date_from_int(val: int, div: int=1) -> date:
     val //= div
     d = val % 100
     val //= 100
@@ -196,7 +195,7 @@ class Quarter(TimeunitKind):
         q_new = dt.year * 4 + amount + (dt.month - 1) // 3
         y = q_new // 4
         q = q_new % 4
-        return date(q_new // 4, 3 * q + 1, 1)
+        return date(y, 3 * q + 1, 1)
 
     @classmethod
     def _next(cls, dt):
