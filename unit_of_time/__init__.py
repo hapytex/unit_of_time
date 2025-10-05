@@ -20,7 +20,7 @@ class TimeunitKindMeta(type):
     kind_int: int = -1
     formatter: str = ""
     _pre_registered: list["TimeunitKindMeta"] = []
-    _registered: Union[None, Dict[int, "TimeunitKindMeta"]] = None
+    _registered: None | Dict[int, "TimeunitKindMeta"] = None
     _multiplier: int = -1
 
     def __init__(cls, name, bases, attrs) -> None:
@@ -143,7 +143,7 @@ class TimeunitKindMeta(type):
     def truncate(cls, dt: date) -> date:
         return datetime.strptime(cls.to_str(dt), cls.formatter).date()
 
-    def _inner_shift(cls, cur, dt, amount) -> Union[date, None]:
+    def _inner_shift(cls, cur, dt, amount) -> date | None:
         return None
 
     def _shift(cls, cur: "Timeunit", dt: date, amount: int) -> "Timeunit":
