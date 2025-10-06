@@ -250,9 +250,9 @@ class Month(TimeunitKind):
 
     @classmethod
     def get_date_from_index(cls, idx):
-        yy = (idx - 1) // 12
-        mm = ((idx - 1) % 12) + 1
-        return date(yy, mm, 1)
+        yy = idx // 12
+        mm = (idx % 12) + 1
+        return date(yy + 1, mm, 1)
 
     @classmethod
     def _next(cls, dt):
