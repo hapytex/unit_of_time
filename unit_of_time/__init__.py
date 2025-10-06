@@ -145,7 +145,7 @@ class TimeunitKindMeta(type):
     def __getitem__(cls, item):
         if isinstance(item, int):
             return cls(cls.get_date_from_index(item))
-        raise TypeError(f'Can not lookup an index for {item}')
+        raise TypeError(f"Can not lookup an index for {item}")
 
     def truncate(cls, dt):
         return datetime.strptime(cls.to_str(dt), cls.formatter).date()
@@ -192,7 +192,7 @@ class Year(TimeunitKind):
 
     @classmethod
     def get_date_from_index(cls, idx):
-        return date(idx+date.min.year, 1, 1)
+        return date(idx + date.min.year, 1, 1)
 
     @classmethod
     def _inner_shift(cls, cur, dt, amount):
@@ -214,7 +214,7 @@ class Quarter(TimeunitKind):
     def get_date_from_index(cls, idx):
         yy = (idx - 1) // 4
         qq = idx - 4 * yy
-        return date(yy, 3*qq+1, 1)
+        return date(yy, 3 * qq + 1, 1)
 
     @classmethod
     def truncate(cls, dt):
@@ -278,7 +278,7 @@ class Week(TimeunitKind):
 
     @classmethod
     def get_date_from_index(cls, idx):
-        return date.min + timedelta(days=7*idx)
+        return date.min + timedelta(days=7 * idx)
 
     @classmethod
     def truncate(cls, dt):

@@ -108,18 +108,10 @@ class TimeUnitTest(unittest.TestCase):
                         idx,
                         kind.get_index_for_date(tu.next.dt) - 1,
                     )
-                    self.assertEqual(
-                        tu.dt,
-                        kind.get_date_from_index(idx)
-                    )
-                    self.assertEqual(
-                        tu,
-                        kind[idx]
-                    )
+                    self.assertEqual(tu.dt, kind.get_date_from_index(idx))
+                    self.assertEqual(tu, kind[idx])
                     for dt2 in tu:
-                        self.assertEqual(
-                            idx, kind.get_index_for_date(dt2)
-                        )
+                        self.assertEqual(idx, kind.get_index_for_date(dt2))
                     self.assertGreater(tu, tu.previous)
                     self.assertGreater(tu.next, tu)
                     self.assertGreaterEqual(tu, tu.previous)
