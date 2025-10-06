@@ -214,7 +214,7 @@ class Quarter(TimeunitKind):
     def get_date_from_index(cls, idx):
         yy = (idx - 1) // 4
         qq = idx - 4 * yy
-        return date(yy, 3 * qq + 1, 1)
+        return date(yy+1, 3 * qq + 1, 1)
 
     @classmethod
     def truncate(cls, dt):
