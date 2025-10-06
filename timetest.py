@@ -103,13 +103,22 @@ class TimeUnitTest(unittest.TestCase):
                     self.assertLess(tu, tu.next)
                     self.assertLessEqual(tu.previous, tu)
                     self.assertLessEqual(tu, tu.next)
+                    idx = kind.get_index_for_date(tu.dt)
                     self.assertEqual(
-                        kind.get_index_for_date(dt),
+                        idx,
                         kind.get_index_for_date(tu.next.dt) - 1,
+                    )
+                    self.assertEqual(
+                        tu.dt,
+                        kind.get_date_from_index(idx)
+                    )
+                    self.assertEqual(
+                        tu,
+                        kind[idx]
                     )
                     for dt2 in tu:
                         self.assertEqual(
-                            kind.get_index_for_date(dt), kind.get_index_for_date(dt2)
+                            idx, kind.get_index_for_date(dt2)
                         )
                     self.assertGreater(tu, tu.previous)
                     self.assertGreater(tu.next, tu)

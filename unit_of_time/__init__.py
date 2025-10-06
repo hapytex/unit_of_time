@@ -139,6 +139,14 @@ class TimeunitKindMeta(type):
     def get_index_for_date(cls, dt):
         return None
 
+    def get_date_from_index(cls, dt):
+        return None
+
+    def __getitem__(cls, item):
+        if isinstance(item, int):
+            return cls(cls.get_date_from_index(item))
+        raise TypeError(f'Can not lookup an index for {item}')
+
     def truncate(cls, dt):
         return datetime.strptime(cls.to_str(dt), cls.formatter).date()
 
@@ -183,6 +191,10 @@ class Year(TimeunitKind):
         return dt.year - date.min.year
 
     @classmethod
+    def get_date_from_index(cls, idx):
+        return date(idx+date.min.year, 1, 1)
+
+    @classmethod
     def _inner_shift(cls, cur, dt, amount):
         return date(dt.year + amount, 1, 1)
 
@@ -197,6 +209,12 @@ class Quarter(TimeunitKind):
     @classmethod
     def get_index_for_date(cls, dt):
         return 4 * (dt.year - date.min.year) + max((dt.month - 1) // 3, 0)
+
+    @classmethod
+    def get_date_from_index(cls, idx):
+        yy = (idx - 1) // 4
+        qq = idx - 4 * yy
+        return date(yy, 3*qq+1, 1)
 
     @classmethod
     def truncate(cls, dt):
@@ -231,6 +249,12 @@ class Month(TimeunitKind):
         return 12 * (dt.year - date.min.year) + dt.month - 1
 
     @classmethod
+    def get_date_from_index(cls, idx):
+        yy = (idx - 1) // 12
+        mm = ((idx - 1) % 12) + 1
+        return date(yy, mm, 1)
+
+    @classmethod
     def _next(cls, dt):
         m2 = dt.month + 1
         if m2 > 12:
@@ -253,6 +277,10 @@ class Week(TimeunitKind):
         return (dt - date.min).days // 7
 
     @classmethod
+    def get_date_from_index(cls, idx):
+        return date.min + timedelta(days=7*idx)
+
+    @classmethod
     def truncate(cls, dt):
         if isinstance(dt, datetime):
             dt = dt.date()
@@ -270,6 +298,10 @@ class Day(TimeunitKind):
     @classmethod
     def get_index_for_date(cls, dt):
         return (dt - date.min).days
+
+    @classmethod
+    def get_date_from_index(cls, idx):
+        return date.min + timedelta(days=idx)
 
     @classmethod
     def _inner_shift(cls, cur, dt, amount):
