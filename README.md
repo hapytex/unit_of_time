@@ -142,6 +142,21 @@ specials_unit_of_times[Day(date(1958, 3, 25))] = True
 
 we can even use this to slice, although it probably is not very useful.
 
+More useful are the `.get_index_for_date(..)` and `.get_date_from_index(..)` methods, which allow to determine how many days, weeks, months, quarters and years are between `date.min` and the date given, and convert this back to a date. For example:
+
+```
+Week.get_index_for_date(date(1958, 3, 25))  # 102123
+Week.get_date_from_index(102123)  # date(1958, 3, 24)
+```
+
+so 1958-03-25 is the 102'123 week since 0001-01-01, and that week starts the 24<sup>th</sup> of March, 1958.
+
+We can also use the index to get a `TimUnit` with:
+
+```
+Week[102123]  # Week(date(1958, 3, 24))
+```
+
 ## Registering a new time unit
 
 We can register a new time unit. For example, a decade with:
