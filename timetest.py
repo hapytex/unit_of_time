@@ -26,6 +26,10 @@ class Decade(TimeunitKind):
         return dt.year // 10
 
     @classmethod
+    def get_date_from_index(cls, idx):
+        return date(10 * idx, 1, 1)
+
+    @classmethod
     def last_day(cls, dt):
         """
         Return the last day of the decade containing the given date.
