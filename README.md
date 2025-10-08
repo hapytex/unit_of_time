@@ -105,6 +105,40 @@ for dt in Quarter(date(1958, 3, 25)):
 
 we can also convert such collection to a list.
 
+### Subscripting
+
+The `Day`, `Week`, `Month, etc. classes have `.get_index_for_date(..)` and `.get_date_from_index(..)` methods, which allow to determine how many days, weeks, months, quarters and years are between `date.min` and the date given, and convert this back to a date. For example:
+
+```
+Week.get_index_for_date(date(1958, 3, 25))  # 102123
+Week.get_date_from_index(102123)  # date(1958, 3, 24)
+```
+
+so 1958-03-25 is the 102'123 week since 0001-01-01, and that week starts the 24<sup>th</sup> of March, 1958.
+
+We can also use the index to get a `TimUnit` with:
+
+```
+Week[102123]  # Week(date(1958, 3, 24))
+```
+
+moreover a week itself can be subscripted, for example:
+
+```
+Week(date(1958, 3, 24))[2]  # date(1958, 3, 26)
+```
+
+one can also slice to get an *generator* that generates `Week`s or `date`s in the week respectively.
+
+The `Week` class itself is also iterable, for example:
+
+```
+for week in Week:
+    print(week)
+```
+
+will start enumerating over all weeks since 0001-01-01.
+
 ### Shifting units of time
 
 The units of time can also be shifted, for example:
@@ -141,21 +175,6 @@ specials_unit_of_times[Day(date(1958, 3, 25))] = True
 ```
 
 we can even use this to slice, although it probably is not very useful.
-
-More useful are the `.get_index_for_date(..)` and `.get_date_from_index(..)` methods, which allow to determine how many days, weeks, months, quarters and years are between `date.min` and the date given, and convert this back to a date. For example:
-
-```
-Week.get_index_for_date(date(1958, 3, 25))  # 102123
-Week.get_date_from_index(102123)  # date(1958, 3, 24)
-```
-
-so 1958-03-25 is the 102'123 week since 0001-01-01, and that week starts the 24<sup>th</sup> of March, 1958.
-
-We can also use the index to get a `TimUnit` with:
-
-```
-Week[102123]  # Week(date(1958, 3, 24))
-```
 
 ## Registering a new time unit
 
