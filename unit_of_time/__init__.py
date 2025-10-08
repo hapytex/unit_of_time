@@ -15,7 +15,18 @@ def date_to_int(val, mul=1):
     return mul * (val.year * 10000 + val.month * 100 + val.day)
 
 
-class TimeunitKindMeta(type):
+class IndexableMixin:
+    def __getitem__(self, key):
+        idc = range(len(self))[key]
+        if isinstance(idc, int):
+            return self._from_index(idc)
+        def generator():
+            for idx in idc:
+                yield self._from_index(idx)
+        return generator()
+
+
+class TimeunitKindMeta(IndexableMixin, type):
     kind_int = None
     formatter = None
     _pre_registered = []
@@ -28,6 +39,9 @@ class TimeunitKindMeta(type):
             TimeunitKindMeta._pre_registered.append(cls)
             TimeunitKindMeta._registered = None
             TimeunitKindMeta._multiplier = None
+
+    def _from_index(cls, idx):
+        return cls(cls.get_date_from_index(idx))
 
     @property
     def unit_register(self):
@@ -49,6 +63,9 @@ class TimeunitKindMeta(type):
             result = 10 ** math.ceil(math.log10(result))
             TimeunitKindMeta._multiplier = result
         return result
+
+    def __len__(cls):
+        return cls.get_index_for_date(date.max) + 1
 
     def __int__(self):
         return self.kind_int
@@ -141,11 +158,6 @@ class TimeunitKindMeta(type):
 
     def get_date_from_index(cls, dt):
         return None
-
-    def __getitem__(cls, item):
-        if isinstance(item, int):
-            return cls(cls.get_date_from_index(item))
-        raise TypeError(f"Can not lookup an index for {item}")
 
     def truncate(cls, dt):
         return datetime.strptime(cls.to_str(dt), cls.formatter).date()
@@ -312,7 +324,7 @@ class Day(TimeunitKind):
         return dt + timedelta(days=1)
 
 
-class Timeunit:
+class Timeunit(IndexableMixin):
     def __init__(self, kind, dt):
         if isinstance(kind, int):
             kind = TimeunitKind.unit_register[kind]
@@ -364,6 +376,9 @@ class Timeunit:
         Return the number of days in the time unit.
         """
         return (self.next.dt - self.dt).days
+
+    def _from_index(self, idx):
+        return self.dt + timedelta(days=idx)
 
     def __iter__(self):
         dt = self.dt
