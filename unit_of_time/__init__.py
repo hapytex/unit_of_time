@@ -59,6 +59,8 @@ class TimeunitKindMeta(IndexableMixin, type):
     _pre_registered = []
     _registered = None
     _multiplier = None
+    first_date = date.min
+    last_date = date.max
 
     def __init__(cls, name, bases, attrs):
         """
@@ -130,7 +132,7 @@ class TimeunitKindMeta(IndexableMixin, type):
         Returns:
             int: The count of discrete units (computed as highest index for date.max plus one).
         """
-        return cls.get_index_for_date(date.max) + 1
+        return cls.get_index_for_date(cls.last_date) + 1
 
     def __int__(self):
         """
@@ -518,6 +520,7 @@ class Month(TimeunitKind):
 class Week(TimeunitKind):
     kind_int = 7
     formatter = "%YW%W"
+    last_date = date(9999, 12, 26)
 
     @classmethod
     def _inner_shift(cls, cur, dt, amount):
