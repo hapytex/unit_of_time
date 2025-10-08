@@ -159,6 +159,10 @@ class TimeunitKindMeta(IndexableMixin, type):
     def get_date_from_index(cls, dt):
         return None
 
+    def __iter__(cls):
+        for i in range(len(cls)):
+            yield cls._from_index(i)
+
     def truncate(cls, dt):
         return datetime.strptime(cls.to_str(dt), cls.formatter).date()
 
