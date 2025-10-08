@@ -25,10 +25,10 @@ class Decade(TimeunitKind):
     def get_index_for_date(cls, dt):
         """
         Return the zero-based decade index for the given date.
-        
+
         Parameters:
             dt (date or datetime): The date for which to compute the decade index.
-        
+
         Returns:
             int: The decade index equal to the calendar year divided by 10 using integer division (year // 10).
         """
@@ -38,10 +38,10 @@ class Decade(TimeunitKind):
     def get_date_from_index(cls, idx):
         """
         Return the start date (January 1) of the decade represented by the given index.
-        
+
         Parameters:
             idx (int): Decade index; the corresponding year is 10 * idx.
-        
+
         Returns:
             datetime.date: January 1 of the year 10 * idx.
         """
@@ -51,10 +51,10 @@ class Decade(TimeunitKind):
     def last_day(cls, dt):
         """
         Return the last date of the decade that contains the given date.
-        
+
         Parameters:
             dt (date | datetime): Date or datetime within the target decade.
-        
+
         Returns:
             date: The last day of that decade.
         """
