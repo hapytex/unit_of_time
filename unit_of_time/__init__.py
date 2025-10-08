@@ -20,9 +20,11 @@ class IndexableMixin:
         idc = range(len(self))[key]
         if isinstance(idc, int):
             return self._from_index(idc)
+
         def generator():
             for idx in idc:
                 yield self._from_index(idx)
+
         return generator()
 
 
