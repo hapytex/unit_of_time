@@ -2,6 +2,8 @@ import math
 from datetime import date, datetime, timedelta
 
 
+ONE_DAY = timedelta(days=1)
+
 def date_from_int(val, div=1):
     val //= div
     d = val % 100
@@ -728,7 +730,6 @@ class Timeunit(IndexableMixin):
         """
         dt = self.dt
         end = self.next.dt
-        ONE_DAY = timedelta(days=1)
         while dt < end:
             yield dt
             dt += ONE_DAY
@@ -810,7 +811,7 @@ class Timeunit(IndexableMixin):
         """
         if isinstance(item, date):
             return item, item
-        elif isinstance(item, Timeunit):
+        if isinstance(item, Timeunit):
             return item.date_range
         # try to make a range
         try:
@@ -818,7 +819,8 @@ class Timeunit(IndexableMixin):
             if isinstance(dt0, date) and isinstance(dt1, date):
                 return item
         except TypeError:
-            raise TypeError(f"Item {item!r} has no date range.") from None
+            pass
+        raise TypeError(f"Item {item!r} has no date range.")
 
     def overlaps_with(self, item):
         """
