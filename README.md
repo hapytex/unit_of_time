@@ -139,6 +139,14 @@ for week in Week:
 
 will start enumerating over all weeks since 0001-01-01.
 
+A time unit also has a length: the number of time units that can be represented, so:
+
+```
+len(Week)  # 521722
+``
+
+means the software can represent 521'722 weeks from 0001-01-01 to 9999-12-26.
+
 ### Shifting units of time
 
 The units of time can also be shifted, for example:
