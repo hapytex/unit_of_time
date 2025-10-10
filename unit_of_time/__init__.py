@@ -41,18 +41,35 @@ class IndexableMixin:
         idc = range(len(self))[key]
         if isinstance(idc, int):
             return self._from_index(idc)
+        else:
+            return SlicedProxy(self, key)
 
-        def generator():
-            """
-            Yield elements corresponding to each index in the captured index iterable.
 
-            Returns:
-                generator: Yields the result of self._from_index(idx) for each index in the iterable.
-            """
-            for idx in idc:
-                yield self._from_index(idx)
+class SlicedProxy(IndexableMixin):
+    def __init__(self, parent, _slice: slice):
+        self.parent = parent
+        self._slice = _slice
 
-        return generator()
+    @property
+    def range_object(self):
+        return range(len(self.parent))[self._slice]
+
+    def __iter__(self):
+        for idx in self.range_object:
+            yield self.parent[idx]
+
+    def _from_index(self, idx):
+        return self.parent[self.range_object[idx]]
+
+    def __len__(self):
+        return len(self.range_object)
+
+    def __repr__(self):
+        s = self._slice
+        s = ':'.join(
+            str(si) if si is not None else '' for si in (s.start, s.stop, s.step)
+        )
+        return f'{self.parent!r}[{s}]'
 
 
 class TimeunitKindMeta(IndexableMixin, type):
