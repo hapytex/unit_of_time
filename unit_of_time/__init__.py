@@ -4,6 +4,7 @@ from datetime import date, datetime, timedelta
 
 ONE_DAY = timedelta(days=1)
 
+
 def date_from_int(val, div=1):
     val //= div
     d = val % 100
@@ -66,10 +67,10 @@ class SlicedProxy(IndexableMixin):
 
     def __repr__(self):
         s = self._slice
-        s = ':'.join(
-            str(si) if si is not None else '' for si in (s.start, s.stop, s.step)
+        s = ":".join(
+            str(si) if si is not None else "" for si in (s.start, s.stop, s.step)
         )
-        return f'{self.parent!r}[{s}]'
+        return f"{self.parent!r}[{s}]"
 
 
 class TimeunitKindMeta(IndexableMixin, type):
