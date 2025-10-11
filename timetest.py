@@ -63,7 +63,7 @@ class Decade(TimeunitKind):
 
 
 TIME_UNITS = [Decade, Year, Quarter, Month, Week, Day]
-START_DATE = date(1302, 7, 11)
+START_DATE = date(1902, 7, 11)
 END_DATE = date(2019, 11, 25)
 
 
@@ -234,6 +234,7 @@ class TimeUnitTest(unittest.TestCase):
             self.assertEqual(d[kind], kind in seen)
             self.assertEqual(kind.get_index_for_date(date.min), 0)
             d[kind] = True
+            self.assertEqual(list(kind[10:110:10][5:9:2]), list(kind[60:100:20]))
             self.assertNotIn(kind, seen)
             seen.add(kind)
             for kind2 in TIME_UNITS[i:]:
