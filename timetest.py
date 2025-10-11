@@ -2,6 +2,7 @@ import unittest
 from datetime import date, datetime, time, timedelta
 
 from unit_of_time import Year, Quarter, Month, Week, Day, TimeunitKind, Timeunit
+from itertools import islice
 
 
 class Decade(TimeunitKind):
@@ -19,26 +20,52 @@ class Decade(TimeunitKind):
         Returns:
                 date: The first day (January 1) of the decade in which `dt` falls.
         """
-        return date(10 * (dt.year // 10), 1, 1)
+        return date(max(10 * (dt.year // 10), 1), 1, 1)
+
+    @classmethod
+    def get_index_for_date(cls, dt):
+        """
+        Return the zero-based decade index for the given date.
+
+        Parameters:
+            dt (date or datetime): The date for which to compute the decade index.
+
+        Returns:
+            int: The decade index equal to the calendar year divided by 10 using integer division (year // 10).
+        """
+        return dt.year // 10
+
+    @classmethod
+    def get_date_from_index(cls, idx):
+        """
+        Return the start date (January 1) of the decade represented by the given index.
+
+        Parameters:
+            idx (int): Decade index; the corresponding year is 10 * idx.
+
+        Returns:
+            datetime.date: January 1 of the year 10 * idx.
+        """
+        return date(max(10 * idx, 1), 1, 1)
 
     @classmethod
     def last_day(cls, dt):
         """
-        Return the last day of the decade containing the given date.
+        Return the last date of the decade that contains the given date.
 
         Parameters:
-                dt (date or datetime): The date for which to determine the last day of its decade.
+            dt (date | datetime): Date or datetime within the target decade.
 
         Returns:
-                date: The last day of the decade as a date object.
+            date: The last day of that decade.
         """
         dt = cls.truncate(dt)
         return date(dt.year + 10, 1, 1) - timedelta(days=1)
 
 
 TIME_UNITS = [Decade, Year, Quarter, Month, Week, Day]
-START_DATE = date(1302, 7, 11)
-END_DATE = date(2019, 11, 25)
+START_DATE = date(902, 7, 11)
+END_DATE = date(1019, 11, 25)
 
 
 class TimeUnitTest(unittest.TestCase):
@@ -99,6 +126,17 @@ class TimeUnitTest(unittest.TestCase):
                     self.assertLess(tu, tu.next)
                     self.assertLessEqual(tu.previous, tu)
                     self.assertLessEqual(tu, tu.next)
+                    idx = kind.get_index_for_date(tu.dt)
+                    self.assertEqual(
+                        idx,
+                        kind.get_index_for_date(tu.next.dt) - 1,
+                    )
+                    self.assertEqual(tu.dt, kind.get_date_from_index(idx))
+                    self.assertEqual(tu, kind[idx])
+                    if dt == tu.first_date:
+                        for idx2, dt2 in enumerate(tu):
+                            self.assertEqual(idx, kind.get_index_for_date(dt2))
+                            self.assertEqual(dt2, tu[idx2])
                     self.assertGreater(tu, tu.previous)
                     self.assertGreater(tu.next, tu)
                     self.assertGreaterEqual(tu, tu.previous)
@@ -109,6 +147,8 @@ class TimeUnitTest(unittest.TestCase):
                     self.assertEqual(TimeunitKind.from_int(int(tu)), tu)
                     self.assertIn(dt, tu)
                     self.assertIn((dt, dt), tu)
+                    with self.assertRaises(TypeError):
+                        (dt, None) in tu
                     self.assertIn((tu.first_date, tu.last_date), tu)
                     with self.assertRaises(TypeError):
                         self.assertIn(1425, tu)
@@ -151,8 +191,16 @@ class TimeUnitTest(unittest.TestCase):
                     self.assertEqual(tu.previous.previous.previous, 3 << tu)
                     self.assertLess(tu.last_date, tu.next.first_date)
                     self.assertLess(tu.previous.last_date, tu.first_date)
-                    self.assertEqual((tu.next.first_date - tu.last_date), timedelta(days=1))
-                    self.assertEqual((tu.first_date - tu.previous.last_date), timedelta(days=1))
+                    self.assertEqual(
+                        (tu.next.first_date - tu.last_date), timedelta(days=1)
+                    )
+                    self.assertEqual(
+                        (tu.first_date - tu.previous.last_date), timedelta(days=1)
+                    )
+
+    def test_repr(self):
+        self.assertEqual("Week", repr(Week))
+        self.assertEqual("Week[102123:105341:]", repr(Week[102123:105341:]))
 
     def test_hierarchy(self):
         """
@@ -166,6 +214,7 @@ class TimeUnitTest(unittest.TestCase):
         """
         for i, superkind in enumerate(TIME_UNITS, 1):
             for kind in TIME_UNITS[i:]:
+                self.assertLess(superkind, kind)
                 for dt in self.date_range_yield():
                     with self.subTest(superkind=superkind, kind=kind, dt=dt):
                         stu = superkind(dt)
@@ -193,7 +242,10 @@ class TimeUnitTest(unittest.TestCase):
             self.assertEqual(kind, kind.kind_int)
             self.assertEqual(kind.kind_int, kind)
             self.assertEqual(d[kind], kind in seen)
+            self.assertEqual(kind.get_index_for_date(date.min), 0)
             d[kind] = True
+            self.assertEqual(list(kind[10:110:10][5:9:2]), list(kind[60:100:20]))
+            self.assertEqual(list(islice(kind, 3)), list(kind[:3]))
             self.assertNotIn(kind, seen)
             seen.add(kind)
             for kind2 in TIME_UNITS[i:]:

@@ -12,18 +12,12 @@ jobs:
       - uses: psf/black@stable
         with:
           options: "--check"
-       pylint unit_of_time
   test:
     name: run tests
-    runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version:
-          - '3.9'
-          - '3.10'
-          - '3.11'
-          - '3.12'
-          - '3.13'
+        python-version: ['3.8', '3.9', '3.10', '3.11', '3.12', '3.13', '3.14']
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
     - name: Set up Python
@@ -32,20 +26,15 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - name: Run test
       run: |
-        pip install pytest-cov
-        pytest --junitxml=pytest.xml --cov-fail-under=100 --cov-report=term-missing:skip-covered --cov=unit_of_time timetest.py
+        pip install pytest-cov pytest-random-order
+        pytest --random-order --junitxml=pytest.xml --cov-fail-under=100 --cov-report=term-missing:skip-covered --cov=unit_of_time timetest.py
     - name: Coveralls
       uses: coverallsapp/github-action@v2
   build:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version:
-          - '3.9'
-          - '3.10'
-          - '3.11'
-          - '3.12'
-          - '3.13'
+        python-version: ['3.8', '3.9', '3.10', '3.11', '3.12', '3.13', '3.14']
     steps:
     - name: checkout code
       uses: actions/checkout@v4
