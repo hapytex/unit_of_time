@@ -107,7 +107,7 @@ we can also convert such collection to a list.
 
 ### Subscripting
 
-The `Day`, `Week`, `Month, etc. classes have `.get_index_for_date(..)` and `.get_date_from_index(..)` methods, which allow to determine how many days, weeks, months, quarters and years are between `date.min` and the date given, and convert this back to a date. For example:
+The `Day`, `Week`, `Month, etc. classes have `.get_index_for_date(…)` and `.get_date_from_index(…)` methods, which allow to determine how many days, weeks, months, quarters and years are between `date.min` and the date given, and convert this back to a date. For example:
 
 ```
 Week.get_index_for_date(date(1958, 3, 25))  # 102123
@@ -230,7 +230,7 @@ class Decade(TimeunitKind):
 
 this might be useful if the formatting is more advanced than what Python's date formatter can handle.
 
-Furthermore, one implements the `.truncate(..)` class method to convert a date to the start of the date range, and the `_next(..)` which returns the first date for the next decade.
+Furthermore, one implements the `.truncate(…)` class method to convert a date to the start of the date range, and the `_next(…)` which returns the first date for the next decade.
 
 With these functions, we have registered a new time unit.
 
