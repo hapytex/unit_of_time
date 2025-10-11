@@ -270,9 +270,8 @@ class TimeunitKindMeta(IndexableMixin, type):
             dt (datetime.date | datetime.datetime): Date to convert to an index for this time unit kind.
 
         Returns:
-            int | None: The zero-based index of the unit containing `dt` relative to `date.min`, or `None` if the kind does not implement indexing.
+            int: The zero-based index of the unit containing `dt` relative to `date.min`.
         """
-        return None
 
     @abstractmethod
     def get_date_from_index(cls, dt):
@@ -283,9 +282,8 @@ class TimeunitKindMeta(IndexableMixin, type):
                 dt (int): Integer index representing the offset of the unit (e.g., number of days/weeks/months/years since date.min).
 
         Returns:
-                date_or_none (datetime.date | None): The start date corresponding to `dt`, or `None` when the kind does not provide a mapping.
+                date (datetime.date): The start date corresponding to `dt`.
         """
-        return None
 
     def __iter__(cls):
         """

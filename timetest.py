@@ -212,6 +212,7 @@ class TimeUnitTest(unittest.TestCase):
         """
         for i, superkind in enumerate(TIME_UNITS, 1):
             for kind in TIME_UNITS[i:]:
+                self.assertLess(superkind, kind)
                 for dt in self.date_range_yield():
                     with self.subTest(superkind=superkind, kind=kind, dt=dt):
                         stu = superkind(dt)
