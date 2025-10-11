@@ -446,7 +446,7 @@ class Quarter(TimeunitKind):
         """
         yy = idx // 4
         qq = idx - 4 * yy
-        return date(yy + 1, 3 * qq + 1, 1)
+        return date(yy + date.min.year, 3 * qq + 1, 1)
 
     @classmethod
     def truncate(cls, dt):
@@ -521,7 +521,7 @@ class Month(TimeunitKind):
         """
         yy = idx // 12
         mm = (idx % 12) + 1
-        return date(yy + 1, mm, 1)
+        return date(yy + date.min.year, mm, 1)
 
     @classmethod
     def _next(cls, dt):
