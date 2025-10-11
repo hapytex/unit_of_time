@@ -5,9 +5,6 @@ from datetime import date, datetime, timedelta
 ONE_DAY = timedelta(days=1)
 
 
-ONE_DAY = timedelta(days=1)
-
-
 def date_from_int(val, div=1):
     val //= div
     d = val % 100
