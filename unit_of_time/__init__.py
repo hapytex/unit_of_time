@@ -253,7 +253,7 @@ class TimeunitKindMeta(IndexableMixin, type):
         Returns:
             str: String representation of `dt` formatted with `cls.formatter`.
         """
-        return dt.strftime(cls.formatter)
+        return dt.strftime(cls.formatter.replace('%Y', f'{dt.year:04d}'))
 
     def get_index_for_date(cls, dt):
         """
@@ -413,7 +413,7 @@ class Quarter(TimeunitKind):
         Returns:
                 quarter_str (str): A string in the form `YYYYQn` where `n` is the quarter number (1–4).
         """
-        return f"{dt.year}Q{(dt.month+2)//3}"
+        return f"{dt.year:04d}Q{(dt.month+2)//3}"
 
     @classmethod
     def get_index_for_date(cls, dt):

@@ -63,8 +63,8 @@ class Decade(TimeunitKind):
 
 
 TIME_UNITS = [Decade, Year, Quarter, Month, Week, Day]
-START_DATE = date(1902, 7, 11)
-END_DATE = date(2019, 11, 25)
+START_DATE = date(902, 7, 11)
+END_DATE = date(1019, 11, 25)
 
 
 class TimeUnitTest(unittest.TestCase):
