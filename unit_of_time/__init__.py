@@ -166,9 +166,6 @@ class TimeunitKindMeta(IndexableMixin, type):
         """
         return self.kind_int
 
-    def __int__(cls):
-        return cls.kind_int
-
     def __index__(cls):
         return int(cls)
 
