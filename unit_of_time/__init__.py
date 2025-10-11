@@ -106,6 +106,9 @@ class TimeunitKindMeta(IndexableMixin, type):
         """
         return cls(cls.get_date_from_index(idx))
 
+    def __repr__(cls):
+        return cls.__qualname__
+
     @property
     def unit_register(self):
         """

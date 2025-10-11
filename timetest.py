@@ -193,6 +193,10 @@ class TimeUnitTest(unittest.TestCase):
                         (tu.first_date - tu.previous.last_date), timedelta(days=1)
                     )
 
+    def test_repr(self):
+        self.assertEqual("Week", repr(Week))
+        self.assertEqual("Week[102123:105341:]", repr(Week[102123:105341:]))
+
     def test_hierarchy(self):
         """
         Test hierarchical relationships between time unit kinds for correct ordering, duration, and overlap.
