@@ -147,6 +147,8 @@ class TimeUnitTest(unittest.TestCase):
                     self.assertEqual(TimeunitKind.from_int(int(tu)), tu)
                     self.assertIn(dt, tu)
                     self.assertIn((dt, dt), tu)
+                    with self.assertRaises(TypeError):
+                        (dt, None) in tu
                     self.assertIn((tu.first_date, tu.last_date), tu)
                     with self.assertRaises(TypeError):
                         self.assertIn(1425, tu)
