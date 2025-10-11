@@ -46,7 +46,7 @@ class Decade(TimeunitKind):
         Returns:
             datetime.date: January 1 of the year 10 * idx.
         """
-        return date(10 * idx, 1, 1)
+        return date(max(10 * idx, 1), 1, 1)
 
     @classmethod
     def last_day(cls, dt):
