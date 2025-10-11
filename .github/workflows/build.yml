@@ -19,14 +19,6 @@ jobs:
       matrix:
         python-version: ['3.8', '3.9', '3.10', '3.11', '3.12']
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version:
-          - '3.9'
-          - '3.10'
-          - '3.11'
-          - '3.12'
-          - '3.13'
     steps:
     - uses: actions/checkout@v4
     - name: Set up Python
@@ -35,13 +27,8 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - name: Run test
       run: |
-<<<<<<< HEAD
         pip install pytest-cov pytest-random-order
-        pytest --random-order --junitxml=pytest.xml --cov-report=term-missing:skip-covered --cov=unit_of_time timetest.py
-=======
-        pip install pytest-cov
-        pytest --junitxml=pytest.xml --cov-fail-under=100 --cov-report=term-missing:skip-covered --cov=unit_of_time timetest.py
->>>>>>> origin/master
+        pytest --random-order --junitxml=pytest.xml --cov-fail-under=100 --cov-report=term-missing:skip-covered --cov=unit_of_time timetest.py
     - name: Coveralls
       uses: coverallsapp/github-action@v2
   build:
