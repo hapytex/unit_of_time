@@ -125,7 +125,9 @@ class TimeunitKindMeta(IndexableMixin, type):
         result = TimeunitKindMeta._registered
         if result is None:
             result = {
-                k.kind_int: k for k in TimeunitKindMeta._pre_registered if k.kind_int is not None
+                k.kind_int: k
+                for k in TimeunitKindMeta._pre_registered
+                if k.kind_int is not None
             }
             TimeunitKindMeta._registered = result
         return result
