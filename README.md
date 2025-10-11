@@ -109,7 +109,7 @@ we can also convert such collection to a list.
 
 The `Day`, `Week`, `Month, etc. classes have `.get_index_for_date(…)` and `.get_date_from_index(…)` methods, which allow to determine how many days, weeks, months, quarters and years are between `date.min` and the date given, and convert this back to a date. For example:
 
-```
+```python3
 Week.get_index_for_date(date(1958, 3, 25))  # 102123
 Week.get_date_from_index(102123)  # date(1958, 3, 24)
 ```
@@ -118,19 +118,19 @@ so 1958-03-25 is the 102'123 week since 0001-01-01, and that week starts the 24<
 
 We can also use the index to get a `TimUnit` with:
 
-```
+```python3
 Week[102123]  # Week(date(1958, 3, 24))
 ```
 
 moreover a week itself can be subscripted, for example:
 
-```
+```python3
 Week(date(1958, 3, 24))[2]  # date(1958, 3, 26)
 ```
 
 one can also slice to created an object that is a sliced "view" that generates `Week`s or `date`s in the week respectively. This view can then be sliced or indexed further. For example:
 
-```
+```python3
 Week[102123:105341:2]
 ```
 
@@ -139,7 +139,7 @@ is a collection of `Week` objects between `1958-03-24` and `2019-11-25` each tim
 
 The `Week` class itself is also iterable, for example:
 
-```
+```python3
 for week in Week:
     print(week)
 ```
@@ -148,9 +148,9 @@ will start enumerating over all weeks since 0001-01-01.
 
 A time unit also has a length: the number of time units that can be represented, so:
 
-```
+```python3
 len(Week)  # 521722
-``
+```
 
 means the software can represent 521'722 weeks from 0001-01-01 to 9999-12-26.
 
