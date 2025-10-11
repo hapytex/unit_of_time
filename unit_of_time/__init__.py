@@ -253,7 +253,7 @@ class TimeunitKindMeta(IndexableMixin, type):
         Returns:
             str: String representation of `dt` formatted with `cls.formatter`.
         """
-        return dt.strftime(cls.formatter.replace('%Y', f'{dt.year:04d}'))
+        return dt.strftime(cls.formatter.replace("%Y", f"{dt.year:04d}"))
 
     def get_index_for_date(cls, dt):
         """
