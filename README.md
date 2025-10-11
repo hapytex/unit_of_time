@@ -128,7 +128,14 @@ moreover a week itself can be subscripted, for example:
 Week(date(1958, 3, 24))[2]  # date(1958, 3, 26)
 ```
 
-one can also slice to get an *generator* that generates `Week`s or `date`s in the week respectively.
+one can also slice to created an object that is a sliced "view" that generates `Week`s or `date`s in the week respectively. This view can then be sliced or indexed further. For example:
+
+```
+Week[102123:105341:2]
+```
+
+is a collection of `Week` objects between `1958-03-24` and `2019-11-25` each time with one week in between.
+
 
 The `Week` class itself is also iterable, for example:
 
