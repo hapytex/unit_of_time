@@ -2,6 +2,8 @@ from abc import abstractmethod
 import math
 from datetime import date, datetime, timedelta
 
+ONE_DAY = timedelta(days=1)
+
 
 ONE_DAY = timedelta(days=1)
 
@@ -123,9 +125,7 @@ class TimeunitKindMeta(IndexableMixin, type):
         result = TimeunitKindMeta._registered
         if result is None:
             result = {
-                k.kind_int: k
-                for k in TimeunitKindMeta._pre_registered
-                if k.kind_int is not None
+                k.kind_int: k for k in TimeunitKindMeta._pre_registered if k.kind_int is not None
             }
             TimeunitKindMeta._registered = result
         return result
@@ -167,18 +167,22 @@ class TimeunitKindMeta(IndexableMixin, type):
         """
         return self.kind_int
 
-    def __index__(self):
-        return int(self)
+    def __int__(cls):
+        return cls.kind_int
 
-    def __hash__(self):
+    def __index__(cls):
+        return int(cls)
+
+    def __hash__(cls):
         """
         Return the hash value of the time unit, based on its integer encoding.
         """
-        return hash(int(self))
+        return hash(int(cls))
 
-    def __eq__(self, other):
+    def __eq__(cls, other):
         """
-        Return True if this time unit kind is the same as another kind or matches the kind registered for the given integer.
+        Return True if this time unit kind is the same as another kind or matches the
+        kind registered for the given integer.
 
         Parameters:
             other: Another kind instance or an integer representing a registered kind.
@@ -188,7 +192,7 @@ class TimeunitKindMeta(IndexableMixin, type):
         """
         if isinstance(other, int):
             other = TimeunitKind.unit_register[other]
-        return self is other
+        return cls is other
 
     def __call__(cls, dt):
         """
@@ -200,8 +204,8 @@ class TimeunitKindMeta(IndexableMixin, type):
             dt = dt.dt
         return Timeunit(cls, dt)
 
-    def __lt__(self, other):
-        return self.kind_int < other.kind_int
+    def __lt__(cls, other):
+        return cls.kind_int < other.kind_int
 
     def from_int(cls, val):
         mul = cls.multiplier
@@ -241,7 +245,8 @@ class TimeunitKindMeta(IndexableMixin, type):
         """
         Return the next time unit instance of this kind after the given date.
 
-        If a `Timeunit` is provided, its date is used. The returned instance represents the time unit immediately following the one containing `dt`.
+        If a `Timeunit` is provided, its date is used. The returned instance
+        represents the time unit immediately following the one containing `dt`.
         """
         if isinstance(dt, Timeunit):
             dt = dt.dt
@@ -315,11 +320,11 @@ class TimeunitKindMeta(IndexableMixin, type):
         if new_dt is not None:
             return cls(new_dt)
         if amount > 0:
-            for i in range(amount):
+            for _ in range(amount):
                 cur = cur.next
             return cur
         elif amount < 0:
-            for i in range(-amount):
+            for _ in range(-amount):
                 cur = cur.previous
             return cur
         else:
@@ -464,9 +469,7 @@ class Quarter(TimeunitKind):
     @classmethod
     def _inner_shift(cls, cur, dt, amount):
         q_new = dt.year * 4 + amount + (dt.month - 1) // 3
-        y = q_new // 4
-        q = q_new % 4
-        return date(q_new // 4, 3 * q + 1, 1)
+        return date(q_new // 4, 3 * (q_new % 4) + 1, 1)
 
     @classmethod
     def _next(cls, dt):
@@ -701,7 +704,8 @@ class Timeunit(IndexableMixin):
     @property
     def ancestors(self):
         """
-        Yields an infinite sequence of preceding time units, starting from the previous unit of this instance.
+        Yields an infinite sequence of preceding time units, starting from the
+        previous unit of this instance.
 
         Each iteration yields the next earlier time unit of the same kind.
         """
@@ -782,7 +786,8 @@ class Timeunit(IndexableMixin):
         """
         Return True if this Timeunit is equal to another Timeunit or an integer representation.
 
-        Equality is determined by matching both the kind and the truncated date. If `other` is an integer, it is first converted to a Timeunit instance.
+        Equality is determined by matching both the kind and the truncated date.
+        If `other` is an integer, it is first converted to a Timeunit instance.
         """
         if isinstance(other, int):
             other = TimeunitKind.from_int(other)
@@ -840,6 +845,7 @@ class Timeunit(IndexableMixin):
             dt0, dt1 = item
             if isinstance(dt0, date) and isinstance(dt1, date):
                 return item
+            raise TypeError(f"Cannot interpret date range of type {type(item)}")
         except TypeError:
             pass
         raise TypeError(f"Item {item!r} has no date range.")
@@ -852,7 +858,8 @@ class Timeunit(IndexableMixin):
             item: A date, Timeunit, or a tuple of two dates representing a date range.
 
         Returns:
-            bool: True if there is any overlap between this time unit and the specified range or unit; otherwise, False.
+            bool: True if there is any overlap between this time unit and the specified range
+            or unit; otherwise, False.
         """
         frm0, to0 = self._get_range(item)
         frm, to = self.date_range
