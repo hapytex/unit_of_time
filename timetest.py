@@ -4,6 +4,7 @@ from datetime import date, datetime, time, timedelta
 from unit_of_time import Year, Quarter, Month, Week, Day, TimeunitKind, Timeunit
 from itertools import islice
 
+
 class Decade(TimeunitKind):
     kind_int = 0
     formatter = "%Ys"
