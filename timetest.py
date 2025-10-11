@@ -2,7 +2,7 @@ import unittest
 from datetime import date, datetime, time, timedelta
 
 from unit_of_time import Year, Quarter, Month, Week, Day, TimeunitKind, Timeunit
-
+from itertools import islice
 
 class Decade(TimeunitKind):
     kind_int = 0
@@ -239,6 +239,7 @@ class TimeUnitTest(unittest.TestCase):
             self.assertEqual(kind.get_index_for_date(date.min), 0)
             d[kind] = True
             self.assertEqual(list(kind[10:110:10][5:9:2]), list(kind[60:100:20]))
+            self.assertEqual(list(islice(kind, 3)), list(kind[:3]))
             self.assertNotIn(kind, seen)
             seen.add(kind)
             for kind2 in TIME_UNITS[i:]:

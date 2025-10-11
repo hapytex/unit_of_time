@@ -1,3 +1,4 @@
+from abc import abstractmethod
 import math
 from datetime import date, datetime, timedelta
 
@@ -258,6 +259,7 @@ class TimeunitKindMeta(IndexableMixin, type):
         """
         return dt.strftime(cls.formatter.replace("%Y", f"{dt.year:04d}"))
 
+    @abstractmethod
     def get_index_for_date(cls, dt):
         """
         Compute the unit-specific ordinal index for the given date.
@@ -272,6 +274,7 @@ class TimeunitKindMeta(IndexableMixin, type):
         """
         return None
 
+    @abstractmethod
     def get_date_from_index(cls, dt):
         """
         Map an index value for this time unit kind to its corresponding start date.
