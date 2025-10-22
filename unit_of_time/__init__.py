@@ -51,6 +51,11 @@ class SlicedProxy(IndexableMixin):
         self.parent = parent
         self._slice = _slice
 
+    def __eq__(self, other):
+        if isinstance(other, SlicedProxy):
+            return self.parent == other.parent and self.range_object == other.range_object
+        return super().__eq__(other)
+
     @property
     def range_object(self):
         return range(len(self.parent))[self._slice]
@@ -61,6 +66,9 @@ class SlicedProxy(IndexableMixin):
 
     def _from_index(self, idx):
         return self.parent[self.range_object[idx]]
+
+    def _to_index(self, item):
+        pass
 
     def __len__(self):
         return len(self.range_object)
