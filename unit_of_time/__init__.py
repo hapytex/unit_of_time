@@ -42,6 +42,8 @@ class IndexableMixin:
         idc = range(len(self))[key]
         if isinstance(idc, int):
             return self._from_index(idc)
+        elif isinstance(self, SlicedProxy) and isinstance(key, slice):
+            return SlicedProxy(self.parent, self.sliced_range(key))
         else:
             return SlicedProxy(self, key)
 
@@ -53,12 +55,17 @@ class SlicedProxy(IndexableMixin):
 
     def __eq__(self, other):
         if isinstance(other, SlicedProxy):
+            # by using the range object, we check if the indexes are the same
             return self.parent == other.parent and self.range_object == other.range_object
         return super().__eq__(other)
 
     @property
     def range_object(self):
         return range(len(self.parent))[self._slice]
+
+    def sliced_range(self, _slice: slice):
+        new_range = self.range_object[_slice]
+        return slice(new_range.start, new_range.stop, new_range.step)
 
     def __iter__(self):
         for idx in self.range_object:
