@@ -56,7 +56,9 @@ class SlicedProxy(IndexableMixin):
     def __eq__(self, other):
         if isinstance(other, SlicedProxy):
             # by using the range object, we check if the indexes are the same
-            return self.parent == other.parent and self.range_object == other.range_object
+            return (
+                self.parent == other.parent and self.range_object == other.range_object
+            )
         return super().__eq__(other)
 
     @property
