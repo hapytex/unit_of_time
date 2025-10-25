@@ -801,7 +801,9 @@ class Timeunit(IndexableMixin):
         """
         if isinstance(other, int):
             other = TimeunitKind.from_int(other)
-        return self.kind == other.kind and self.dt == other.dt
+        if isinstance(other, Timeunit):
+            return self.kind == other.kind and self.dt == other.dt
+        return super().__eq__(other)
 
     def __lt__(self, other):
         """
