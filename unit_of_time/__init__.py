@@ -76,9 +76,6 @@ class SlicedProxy(IndexableMixin):
     def _from_index(self, idx):
         return self.parent[self.range_object[idx]]
 
-    def _to_index(self, item):
-        pass
-
     def __len__(self):
         return len(self.range_object)
 
