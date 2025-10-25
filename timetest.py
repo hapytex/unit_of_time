@@ -201,7 +201,7 @@ class TimeUnitTest(unittest.TestCase):
     def test_repr(self):
         self.assertEqual("Week", repr(Week))
         self.assertEqual("Week[102123:105341:]", repr(Week[102123:105341:]))
-        self.assertEqual("Week[102123:105341:1]", repr(Week[102123:105341:][1:1:1]))
+        self.assertEqual("Week[102123:105341:1]", repr(Week[102123:105341:][:]))
 
     def test_hierarchy(self):
         """
